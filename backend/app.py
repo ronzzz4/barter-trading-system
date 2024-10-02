@@ -5,9 +5,16 @@ from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from typing import Dict
 from pinecone import Pinecone
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+API_KEY = os.getenv("PINECONE_API_KEY")
+
 
 # Initialize Pinecone with API key from environment variable
-pc = Pinecone(api_key="3339323d-d7b5-4d87-8d8d-fb4ce4b8596d")
+pc = Pinecone(api_key=API_KEY)
 
 index_name = "products-test"
 index = pc.Index(index_name)
@@ -48,15 +55,30 @@ async def insert(data: ProdutData):
     combined_string = f"{productName} {productDescription} {productPrice}"
     vector = model.encode(combined_string)
 
+    query_vector = model.encode(combined_string).tolist()
 
-    # index.upsert([id, embeddings, metadata])
+    results = index.query(
+        vector=query_vector,
+        top_k=5,
+        include_values=False,
+        include_metadata=True
+    )
+
     index.upsert(vectors = [{
         "id" : id,
         "values" : vector,
         "metadata" : metadata
     }])
-    print("Inserted product with id: ", id)
-    return {"message": "Product inserted successfully", "id": id}
+
+    product_data = [
+        result['metadata']
+        for result in results['matches']  
+    ]
+
+    print(product_data)
+
+    return product_data
+
 
 
 if __name__ == '__main__':

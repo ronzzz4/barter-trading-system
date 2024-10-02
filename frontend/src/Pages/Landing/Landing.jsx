@@ -1,10 +1,4 @@
 import React, { useState } from 'react';
-import { Pinecone } from '@pinecone-database/pinecone';
-import axios from 'axios';
-
-const pc = new Pinecone({
-  apiKey: '3339323d-d7b5-4d87-8d8d-fb4ce4b8596d'
-});
 
 function Landing() {
   const [formData, setFormData] = useState({
@@ -12,10 +6,38 @@ function Landing() {
     productDescription: '',
     productPrice: ''
   });
-  const [submissions, setSubmissions] = useState([]);
 
-  const index = pc.index('products-test');
+  const [products, setProducts] = useState([]);
 
+  // Function to send product data to the backend and update the products state
+  function upsert_into_pinecone(productName, productDescription, productPrice) {
+    fetch("http://localhost:8000/insert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        productName,
+        productDescription,
+        productPrice
+      })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("API response:", data); // Debug log
+
+        // Since `data` is an array, you should update the products state by appending the new array
+        if (Array.isArray(data)) {
+          setProducts((prevProducts) => [...prevProducts, ...data]); // Appending new products
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  // Handle form change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -24,54 +46,11 @@ function Landing() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  // Handle form submit
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmissions([...submissions, formData]);
+    upsert_into_pinecone(formData.productName, formData.productDescription, formData.productPrice);
 
-    fetch(
-      "http://localhost:8000/insert",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json" 
-        },
-        body: JSON.stringify({
-          productName: formData.productName,
-          productDescription: formData.productDescription,
-          productPrice: formData.productPrice
-        })
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          console.log(data);
-
-          
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        
-      });
-
-
-
-
-    // try {
-    //   // Call the Flask API to get the embeddings
-    //   const data = {
-    //     productName : formData.productName,
-    //     productDescription : formData.productDescription,
-    //     productPrice : formData.productPrice
-    //   }
-    //   const response = await axios.post('http://127.0.0.1:8000/insert', data);
-    //   console.log(response.data);
-    // } catch (error) {
-    //   console.error('Error: ', error);
-    // }
-  
     setFormData({
       productName: '',
       productDescription: '',
@@ -112,15 +91,22 @@ function Landing() {
         />
         <button type="submit">Submit</button>
       </form>
+
       <div>
-        <h2>Submissions</h2>
-        <ul>
-          {submissions.map((submission, index) => (
-            <li key={index}>
-              {submission.productName} - {submission.productDescription} - ${submission.productPrice}
-            </li>
-          ))}
-        </ul>
+        <h2>Recommendations</h2>
+        <div style={{ display: 'flex' }}>
+          {products.length > 0 ? (
+            products.map((product, index) => (
+              <div key={index} style={{ border: '1px solid #000', padding: '10px', margin: '10px 10px' }}>
+                <h3>{product.productName}</h3>
+                <p>Description: {product.productDescription}</p>
+                <p>Price: ₹{product.productPrice}</p>
+              </div>
+            ))
+          ) : (
+            <p>Waiting for product submission...</p>
+          )}
+        </div>
       </div>
     </div>
   );
