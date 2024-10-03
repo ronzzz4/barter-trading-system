@@ -1,115 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react'
+import { Cover } from '../../Components/Cover'
+import { BackgroundLines } from '../../Components/BackgroundLines'
 
 function Landing() {
-  const [formData, setFormData] = useState({
-    productName: '',
-    productDescription: '',
-    productPrice: ''
-  });
-
-  const [products, setProducts] = useState([]);
-
-  // Function to send product data to the backend and update the products state
-  function upsert_into_pinecone(productName, productDescription, productPrice) {
-    fetch("http://localhost:8000/insert", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        productName,
-        productDescription,
-        productPrice
-      })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API response:", data); // Debug log
-
-        // Since `data` is an array, you should update the products state by appending the new array
-        if (Array.isArray(data)) {
-          setProducts((prevProducts) => [...prevProducts, ...data]); // Appending new products
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  // Handle form change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  // Handle form submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    upsert_into_pinecone(formData.productName, formData.productDescription, formData.productPrice);
-
-    setFormData({
-      productName: '',
-      productDescription: '',
-      productPrice: ''
-    });
-  };
-
   return (
-    <div>
-      <h1 id='header1'>Please provide some details about your product.</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="product-name">Product Name:</label>
-        <input
-          type="text"
-          id="product-name"
-          name="productName"
-          value={formData.productName}
-          onChange={handleChange}
-          required
-        />
-        <label htmlFor="product-description">Product Description:</label>
-        <input
-          type="text"
-          id="product-description"
-          name="productDescription"
-          value={formData.productDescription}
-          onChange={handleChange}
-          required
-        />
-        <label htmlFor="product-price">Product Price:</label>
-        <input
-          type="number"
-          id="product-price"
-          name="productPrice"
-          value={formData.productPrice}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Submit</button>
-      </form>
-
-      <div>
-        <h2>Recommendations</h2>
-        <div style={{ display: 'flex' }}>
-          {products.length > 0 ? (
-            products.map((product, index) => (
-              <div key={index} style={{ border: '1px solid #000', padding: '10px', margin: '10px 10px' }}>
-                <h3>{product.productName}</h3>
-                <p>Description: {product.productDescription}</p>
-                <p>Price: ₹{product.productPrice}</p>
-              </div>
-            ))
-          ) : (
-            <p>Waiting for product submission...</p>
-          )}
-        </div>
+    // <div className="h-screen flex items-center justify-center bg-black">
+    <BackgroundLines className="flex items-center justify-center w-full flex-col px-4">
+      {/* This will render the Cover component with sparkles and hover effects */}
+      <div className="flex-grow flex-col flex items-center justify-center">
+      <h1 className="text-6xl md:text-6xl lg:text-8xl font-bold max-w-7xl mx-auto text-center mt-6 relative z-20 py-6  bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-white">
+      Barter Trading System
+      </h1>
+      <h1 className=' text-4xl md:text-4xl lg:text-6xl font-semibold max-w-7xl pb-5 mx-auto text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-300 to-white '>
+      Trade items at lightning <Cover className="pb-2">speed</Cover>
+      </h1>
+        
       </div>
-    </div>
-  );
-}
+    </BackgroundLines>
+    // </div>
+  )
+}   
 
-export default Landing;
+export default Landing
