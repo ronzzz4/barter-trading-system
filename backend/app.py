@@ -10,7 +10,7 @@ import os
 
 load_dotenv()
 
-API_KEY = os.getenv("PINECONE_API_KEY")
+API_KEY = os.getenv("API_KEY")
 
 
 # Initialize Pinecone with API key from environment variable
