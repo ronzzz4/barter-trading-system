@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './UploadProducts.css'
 
 function UploadProducts() {
   const [formData, setFormData] = useState({

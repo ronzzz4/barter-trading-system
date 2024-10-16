@@ -1,8 +1,92 @@
-#header1{
-    align-items: center;
+/* UploadProducts.css */
+#header1 {
+    font-size: 28px;
+    color: #2c3e50;
     text-align: center;
-    
-}
-h1{
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #f4f6f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  label {
+    font-size: 16px;
+    color: #34495e;
+    font-weight: 600;
+  }
+  
+  input {
+    padding: 12px 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #3275F8;
+  }
+  
+/* Enhanced Button Styling */
+button {
+    background: linear-gradient(135deg, #3275F8, #00D4FF);
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    letter-spacing: 1px;
+  }
+  
+  button:hover {
+    background: linear-gradient(135deg, #00B4F8, #0ACFFE);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  button:active {
+    background: linear-gradient(135deg, #3275F8, #00D4FF);
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  div h2 {
+    font-size: 24px;
+    color: #444;
     text-align: center;
-}
+    margin-top: 40px;
+  }
+  
+  .recommendations-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .recommendation-card {
+    border: 2px solid #ccc;
+    padding: 15px;
+    border-radius: 10px;
+    width: 250px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  }
+  
